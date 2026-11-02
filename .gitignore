@@ -10,3 +10,6 @@ env/
 .vscode/
 .DS_Store
 *.tmp
+
+# Local Netlify folder
+.netlify
