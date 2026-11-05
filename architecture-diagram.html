@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EchoBond — System Architecture Diagram</title>
+<style>
+  body {
+    margin: 0;
+    padding: 24px;
+    background-color: #f6f3ed;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #1e293b;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .header p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+  }
+  .diagram-wrapper {
+    background: #fdfbf7;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px solid #e7e2d7;
+    padding: 16px;
+    max-width: 1320px;
+    width: 100%;
+    overflow-x: auto;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>EchoBond (अपनों की आवाज़) — System Architecture</h1>
+  <p>End-to-End Pipeline: Consented Voice Cloning, Face Recognition, Clinical Safety & Generative Memory Reasoning</p>
+</div>
+
+<div class="diagram-wrapper">
+<svg viewBox="0 0 1300 780" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <!-- Drop Shadow Filter -->
+    <filter id="card-shadow" x="-4%" y="-4%" width="108%" height="108%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.04" />
+    </filter>
+    <filter id="soft-glow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Markers for Arrows -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#ef4444"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <!-- BACKGROUND CANVAS -->
+  <rect width="1300" height="780" fill="#fdfbf7" rx="14"/>
+
+  <!-- ========================================== -->
+  <!-- LEFT INPUT SECTION: RAW DATA SOURCES       -->
+  <!-- ========================================== -->
+  <g transform="translate(40, 310)">
+    <!-- House / Care Home Icon -->
+    <rect x="0" y="0" width="46" height="46" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+    <path d="M 23 8 L 9 20 L 13 20 L 13 36 L 20 36 L 20 27 L 26 27 L 26 36 L 33 36 L 33 20 L 37 20 Z" fill="#475569"/>
+
+    <text x="23" y="66" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Multi-Modal Inputs</text>
+    <text x="23" y="80" text-anchor="middle" font-size="9" fill="#64748b">Caregiver Vault &amp;</text>
+    <text x="23" y="92" text-anchor="middle" font-size="9" fill="#64748b">Patient Interactions</text>
+
+    <!-- Small Input Type Badges -->
+    <g transform="translate(62, 2)">
+      <!-- Audio wav -->
+      <rect x="0" y="0" width="28" height="24" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+      <text x="14" y="16" text-anchor="middle" font-size="13">🎙️</text>
+      <!-- Photo -->
+      <rect x="34" y="0" width="28" height="24" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="1"/>
+      <text x="48" y="16" text-anchor="middle" font-size="13">📷</text>
+      <!-- Schedule -->
+      <rect x="0" y="28" width="28" height="24" rx="4" fill="#e0e7ff" stroke="#6366f1" stroke-width="1"/>
+      <text x="14" y="44" text-anchor="middle" font-size="13">📅</text>
+      <!-- Story -->
+      <rect x="34" y="28" width="28" height="24" rx="4" fill="#f3e8ff" stroke="#a855f7" stroke-width="1"/>
+      <text x="48" y="44" text-anchor="middle" font-size="13">📖</text>
+    </g>
+  </g>
+
+  <!-- ARROW FROM INPUT TO MAIN SPINE -->
+  <line x1="175" y1="340" x2="235" y2="340" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ========================================== -->
+  <!-- MAIN PIPELINE SPINE & CHECKPOINT NODES     -->
+  <!-- ========================================== -->
+  <!-- Solid horizontal pipeline line -->
+  <line x1="240" y1="340" x2="495" y2="340" stroke="#334155" stroke-width="2.5"/>
+
+  <!-- Checkpoint Node 1: Green (Pre-Processing) -->
+  <circle cx="265" cy="340" r="14" fill="#dcfce7" stroke="#22c55e" stroke-width="2.5"/>
+  <circle cx="265" cy="340" r="6" fill="#16a34a"/>
+
+  <!-- Arrow between node 1 and node 2 -->
+  <line x1="285" y1="340" x2="310" y2="340" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+
+  <!-- Checkpoint Node 2: Yellow (Audio Pitch & Biometrics) -->
+  <circle cx="335" cy="340" r="14" fill="#fef9c3" stroke="#eab308" stroke-width="2.5"/>
+  <circle cx="335" cy="340" r="6" fill="#ca8a04"/>
+
+  <!-- Arrow to node 3 -->
+  <path d="M 355 340 Q 380 340 400 315" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+
+  <!-- Checkpoint Node 3: Blue (Structured Ingestion) -->
+  <circle cx="415" cy="300" r="14" fill="#dbeafe" stroke="#3b82f6" stroke-width="2.5"/>
+  <circle cx="415" cy="300" r="6" fill="#2563eb"/>
+
+  <!-- Downward arrow to Node 4 -->
+  <line x1="415" y1="320" x2="415" y2="385" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Checkpoint Node 4: Purple (Database Insertion) -->
+  <circle cx="415" cy="405" r="14" fill="#f3e8ff" stroke="#a855f7" stroke-width="2.5"/>
+  <circle cx="415" cy="405" r="6" fill="#9333ea"/>
+
+  <!-- Arrow from Node 4 to Central Database -->
+  <path d="M 435 410 H 480 Q 495 410 495 380 V 360" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+
+
+  <!-- ========================================== -->
+  <!-- CARD 1: TOP LEFT — ACOUSTIC VOICE PROFILING-->
+  <!-- ========================================== -->
+  <!-- Connector dashed line -->
+  <path d="M 265 320 V 210 H 220" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <g transform="translate(180, 75)" filter="url(#card-shadow)">
+    <!-- Yellow Dashed Card Container -->
+    <rect width="210" height="135" rx="12" fill="#fefce8" stroke="#facc15" stroke-width="1.8" stroke-dasharray="5,4"/>
+    <text x="14" y="24" font-size="12" font-weight="700" fill="#854d0e">Acoustic Pitch &amp; Voice Clone</text>
+    <text x="14" y="40" font-size="9" fill="#713f12" width="180">
+      <tspan x="14" dy="0">Extracts fundamental frequency (F0)</tspan>
+      <tspan x="14" dy="12">from 5–60s WAV clips; tunes</tspan>
+      <tspan x="14" dy="12">pitch offset (+/-Hz) &amp; speaking rate.</tspan>
+    </text>
+
+    <!-- Mini Visual Flow inside Card -->
+    <g transform="translate(14, 80)">
+      <!-- Audio file -->
+      <rect x="0" y="2" width="30" height="30" rx="4" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="15" y="22" text-anchor="middle" font-size="16">🎙️</text>
+      <!-- Arrow -->
+      <line x1="36" y1="17" x2="52" y2="17" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- F0 Brain Analysis -->
+      <rect x="58" y="2" width="30" height="30" rx="4" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="73" y="22" text-anchor="middle" font-size="16">🧠</text>
+      <!-- Arrow -->
+      <line x1="94" y1="17" x2="110" y2="17" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- Scipy/Py -->
+      <rect x="116" y="2" width="30" height="30" rx="4" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="131" y="22" text-anchor="middle" font-size="16">🐍</text>
+      <!-- Arrow -->
+      <line x1="152" y1="17" x2="164" y2="17" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- Profile Ready -->
+      <rect x="168" y="2" width="26" height="30" rx="4" fill="#fef08a" stroke="#eab308"/>
+      <text x="181" y="21" text-anchor="middle" font-size="13">🏷️</text>
+    </g>
+  </g>
+
+
+  <!-- ========================================== -->
+  <!-- CARD 2: BOTTOM LEFT — FACE QUALITY GATE    -->
+  <!-- ========================================== -->
+  <!-- Connector dashed line -->
+  <path d="M 335 360 V 470 H 310" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <g transform="translate(160, 480)" filter="url(#card-shadow)">
+    <!-- Green Dashed Card Container -->
+    <rect width="210" height="145" rx="12" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.8" stroke-dasharray="5,4"/>
+    <text x="14" y="24" font-size="12" font-weight="700" fill="#166534">Biometric Face Quality Gate</text>
+    <text x="14" y="40" font-size="9" fill="#14532d">
+      <tspan x="14" dy="0">Evaluates Laplacian variance (blur</tspan>
+      <tspan x="14" dy="12">check) &amp; lighting before extracting</tspan>
+      <tspan x="14" dy="12">128D embeddings (margin &ge; 0.045).</tspan>
+    </text>
+
+    <!-- Mini Visual Flow inside Card -->
+    <g transform="translate(14, 88)">
+      <rect x="0" y="0" width="36" height="38" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+      <text x="18" y="16" text-anchor="middle" font-size="11">📸</text>
+      <text x="18" y="30" text-anchor="middle" font-size="8" fill="#15803d">Camera</text>
+
+      <line x1="42" y1="19" x2="58" y2="19" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="64" y="0" width="46" height="38" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+      <text x="87" y="16" text-anchor="middle" font-size="11">🔬</text>
+      <text x="87" y="30" text-anchor="middle" font-size="7.5" fill="#15803d">Laplacian</text>
+
+      <line x1="116" y1="19" x2="132" y2="19" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="138" y="0" width="46" height="38" rx="6" fill="#dcfce7" stroke="#22c55e"/>
+      <text x="161" y="16" text-anchor="middle" font-size="11">✅</text>
+      <text x="161" y="30" text-anchor="middle" font-size="8" font-weight="600" fill="#15803d">Verified</text>
+    </g>
+  </g>
+
+
+  <!-- ========================================== -->
+  <!-- CARD 3: TOP MIDDLE — METADATA & SCHEDULES  -->
+  <!-- ========================================== -->
+  <!-- Connector dashed line -->
+  <path d="M 415 280 V 215 H 425" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <g transform="translate(415, 80)" filter="url(#card-shadow)">
+    <!-- Blue Dashed Card Container -->
+    <rect width="205" height="130" rx="12" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.8" stroke-dasharray="5,4"/>
+    <text x="14" y="24" font-size="12" font-weight="700" fill="#1e40af">Temporal Schedule &amp; Routine</text>
+    <text x="14" y="40" font-size="9" fill="#1e3a8a">
+      <tspan x="14" dy="0">Normalizes daily visits, routines,</tspan>
+      <tspan x="14" dy="12">caregiver work hours &amp; places</tspan>
+      <tspan x="14" dy="12">into real-time searchable context.</tspan>
+    </text>
+
+    <!-- Mini Visual Flow -->
+    <g transform="translate(14, 80)">
+      <rect x="0" y="2" width="34" height="30" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+      <text x="17" y="21" text-anchor="middle" font-size="14">⏰</text>
+
+      <line x1="42" y1="17" x2="62" y2="17" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="68" y="2" width="34" height="30" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+      <text x="85" y="21" text-anchor="middle" font-size="14">🗺️</text>
+
+      <line x1="110" y1="17" x2="130" y2="17" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="136" y="2" width="46" height="30" rx="4" fill="#dbeafe" stroke="#3b82f6"/>
+      <text x="159" y="16" text-anchor="middle" font-size="10" font-weight="600" fill="#1d4ed8">{ JSON }</text>
+      <text x="159" y="26" text-anchor="middle" font-size="7" fill="#1d4ed8">Schedule</text>
+    </g>
+  </g>
+
+
+  <!-- ========================================== -->
+  <!-- CARD 4: BOTTOM MIDDLE — DATABASE CREATION  -->
+  <!-- ========================================== -->
+  <!-- Connector dashed line -->
+  <path d="M 415 425 V 535 H 430" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <g transform="translate(425, 520)" filter="url(#card-shadow)">
+    <!-- Purple Dashed Card Container -->
+    <rect width="195" height="135" rx="12" fill="#faf5ff" stroke="#c084fc" stroke-width="1.8" stroke-dasharray="5,4"/>
+    <text x="14" y="24" font-size="12" font-weight="700" fill="#6b21a8">Relational &amp; Memory Store</text>
+    <text x="14" y="40" font-size="9" fill="#581c87">
+      <tspan x="14" dy="0">Indexes family relations, consented</tspan>
+      <tspan x="14" dy="12">voices, album memories, and</tspan>
+      <tspan x="14" dy="12">interaction audit records.</tspan>
+    </text>
+
+    <!-- Mini Visual Flow -->
+    <g transform="translate(14, 80)">
+      <rect x="0" y="2" width="36" height="32" rx="4" fill="#ffffff" stroke="#e9d5ff"/>
+      <text x="18" y="22" text-anchor="middle" font-size="14">🗂️</text>
+
+      <line x1="44" y1="18" x2="62" y2="18" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="68" y="2" width="36" height="32" rx="4" fill="#ffffff" stroke="#e9d5ff"/>
+      <text x="86" y="22" text-anchor="middle" font-size="14">🧠</text>
+
+      <line x1="112" y1="18" x2="130" y2="18" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="136" y="2" width="38" height="32" rx="4" fill="#f3e8ff" stroke="#9333ea"/>
+      <text x="155" y="22" text-anchor="middle" font-size="14">💾</text>
+    </g>
+  </g>
+
+
+  <!-- ========================================== -->
+  <!-- CENTRAL CYLINDER DATABASE                  -->
+  <!-- ========================================== -->
+  <g transform="translate(500, 260)">
+    <!-- 3D Cylinder -->
+    <!-- Shadow -->
+    <ellipse cx="40" cy="85" rx="36" ry="14" fill="#cbd5e1" opacity="0.6"/>
+    <!-- Cylinder Body -->
+    <path d="M 4 20 V 70 C 4 82 76 82 76 70 V 20 Z" fill="url(#db-grad)" stroke="#3b82f6" stroke-width="1.8"/>
+    <!-- Middle Ring Lines -->
+    <path d="M 4 36 C 4 48 76 48 76 36" fill="none" stroke="#60a5fa" stroke-width="1.4"/>
+    <path d="M 4 52 C 4 64 76 64 76 52" fill="none" stroke="#60a5fa" stroke-width="1.4"/>
+    <!-- Top Ellipse -->
+    <ellipse cx="40" cy="20" rx="36" ry="13" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.8"/>
+
+    <defs>
+      <linearGradient id="db-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#bfdbfe"/>
+        <stop offset="50%" stop-color="#eff6ff"/>
+        <stop offset="100%" stop-color="#bfdbfe"/>
+      </linearGradient>
+    </defs>
+
+    <text x="40" y="105" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">EchoBond Vault</text>
+    <text x="40" y="118" text-anchor="middle" font-size="8.5" fill="#3b82f6">SQLite (echobond.db)</text>
+  </g>
+
+
+  <!-- ========================================== -->
+  <!-- TOP RED BOX: CLINICAL RED TEAMING & SAFETY -->
+  <!-- ========================================== -->
+  <g transform="translate(515, 30)" filter="url(#card-shadow)">
+    <!-- Red Outlined Container -->
+    <rect width="260" height="95" rx="14" fill="#fef2f2" stroke="#f87171" stroke-width="1.8"/>
+    <text x="130" y="22" text-anchor="middle" font-size="11.5" font-weight="800" fill="#991b1b">
+      Clinical Safety using <tspan fill="#dc2626">RED TEAMING</tspan> Approach
+    </text>
+
+    <!-- 3 Safety Nodes inside -->
+    <g transform="translate(18, 34)">
+      <!-- Node 1: Distress/Fall -->
+      <g transform="translate(0, 0)">
+        <circle cx="28" cy="16" r="14" fill="#fee2e2" stroke="#ef4444" stroke-width="1.2"/>
+        <text x="28" y="21" text-anchor="middle" font-size="13">🚨</text>
+        <text x="28" y="42" text-anchor="middle" font-size="8" font-weight="600" fill="#991b1b">Distress &amp; Fall</text>
+        <text x="28" y="51" text-anchor="middle" font-size="7" fill="#7f1d1d">Auto-Alert</text>
+      </g>
+
+      <!-- Node 2: Protected Person -->
+      <g transform="translate(80, 0)">
+        <circle cx="28" cy="16" r="14" fill="#fee2e2" stroke="#ef4444" stroke-width="1.2"/>
+        <text x="28" y="21" text-anchor="middle" font-size="13">🔒</text>
+        <text x="28" y="42" text-anchor="middle" font-size="8" font-weight="600" fill="#991b1b">Protected</text>
+        <text x="28" y="51" text-anchor="middle" font-size="7" fill="#7f1d1d">Deceased Safety</text>
+      </g>
+
+      <!-- Node 3: Medical Hallucination -->
+      <g transform="translate(160, 0)">
+        <circle cx="28" cy="16" r="14" fill="#fee2e2" stroke="#ef4444" stroke-width="1.2"/>
+        <text x="28" y="21" text-anchor="middle" font-size="13">💊</text>
+        <text x="28" y="42" text-anchor="middle" font-size="8" font-weight="600" fill="#991b1b">Anti-Hallucination</text>
+        <text x="28" y="51" text-anchor="middle" font-size="7" fill="#7f1d1d">Zero Medical Guess</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Red Lines Connecting Safety to Database & Reasoning Engine -->
+  <!-- To Database -->
+  <path d="M 585 125 V 230 H 545 V 260" fill="none" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)"/>
+  <circle cx="585" cy="160" r="3.5" fill="#ef4444"/>
+  <!-- To Reasoning Engine -->
+  <path d="M 685 125 V 285" fill="none" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)"/>
+  <circle cx="685" cy="190" r="3.5" fill="#ef4444"/>
+
+
+  <!-- LINE FROM DATABASE TO REASONING ENGINE -->
+  <line x1="590" y1="340" x2="640" y2="340" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+
+
+  <!-- ========================================== -->
+  <!-- MAIN REASONING ENGINE (PINK CARD)          -->
+  <!-- ========================================== -->
+  <g transform="translate(645, 275)" filter="url(#card-shadow)">
+    <!-- Pink Container -->
+    <rect width="210" height="135" rx="14" fill="#fdf2f8" stroke="#f472b6" stroke-width="1.8"/>
+    <text x="16" y="24" font-size="13" font-weight="800" fill="#9d174d">Reasoning Engine</text>
+    <text x="16" y="40" font-size="9" fill="#831843">
+      <tspan x="16" dy="0">Context-aware familial dialogue planner</tspan>
+      <tspan x="16" dy="12">retrieving grounded facts &amp; routing queries.</tspan>
+    </text>
+
+    <!-- Planner -> Tool Execution Box inside -->
+    <g transform="translate(16, 68)">
+      <rect width="178" height="52" rx="8" fill="#ffffff" stroke="#fbcfe8" stroke-width="1.2"/>
+
+      <!-- Planner -->
+      <g transform="translate(12, 8)">
+        <text x="18" y="16" text-anchor="middle" font-size="14">🧠</text>
+        <text x="18" y="32" text-anchor="middle" font-size="8" font-weight="700" fill="#9d174d">Intent Planner</text>
+      </g>
+
+      <!-- Arrow -->
+      <line x1="58" y1="26" x2="84" y2="26" stroke="#db2777" stroke-width="1.8" marker-end="url(#arrow)"/>
+
+      <!-- Tool Execution -->
+      <g transform="translate(94, 8)">
+        <text x="34" y="16" text-anchor="middle" font-size="14">⚙️ 🎙️</text>
+        <text x="34" y="32" text-anchor="middle" font-size="8" font-weight="700" fill="#9d174d">Voice &amp; Grounding</text>
+      </g>
+    </g>
+  </g>
+
+
+  <!-- ========================================== -->
+  <!-- CARD TOP RIGHT: MULTI-AGENT / DUAL AI      -->
+  <!-- ========================================== -->
+  <!-- Dashed connector from Reasoning Engine -->
+  <path d="M 750 275 V 225 H 785" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <g transform="translate(770, 75)" filter="url(#card-shadow)">
+    <!-- Cyan Dashed Card Container -->
+    <rect width="250" height="135" rx="12" fill="#ecfeff" stroke="#22d3ee" stroke-width="1.8" stroke-dasharray="5,4"/>
+    <text x="16" y="24" font-size="12.5" font-weight="700" fill="#155e75">Dual-Intelligence Engine</text>
+    <text x="16" y="40" font-size="9" fill="#164e63">
+      <tspan x="16" dy="0">Hybrid orchestration: Google Gemini 1.5/2.0</tspan>
+      <tspan x="16" dy="12">Flash LLM + Local Adaptive Persona Engine</tspan>
+      <tspan x="16" dy="12">ensures zero offline failure or latency.</tspan>
+    </text>
+
+    <!-- 4 Agent / Capability Icons -->
+    <g transform="translate(16, 82)">
+      <!-- Gemini LLM -->
+      <rect x="0" y="0" width="46" height="36" rx="6" fill="#ffffff" stroke="#a5f3fc"/>
+      <text x="23" y="16" text-anchor="middle" font-size="12">✨</text>
+      <text x="23" y="28" text-anchor="middle" font-size="7.5" font-weight="600" fill="#0891b2">Gemini LLM</text>
+
+      <!-- Edge TTS -->
+      <rect x="54" y="0" width="46" height="36" rx="6" fill="#ffffff" stroke="#a5f3fc"/>
+      <text x="77" y="16" text-anchor="middle" font-size="12">🔊</text>
+      <text x="77" y="28" text-anchor="middle" font-size="7.5" font-weight="600" fill="#0891b2">Edge-TTS</text>
+
+      <!-- BM25 Search -->
+      <rect x="108" y="0" width="46" height="36" rx="6" fill="#ffffff" stroke="#a5f3fc"/>
+      <text x="131" y="16" text-anchor="middle" font-size="12">🔍</text>
+      <text x="131" y="28" text-anchor="middle" font-size="7.5" font-weight="600" fill="#0891b2">BM25 Mem</text>
+
+      <!-- Persona Core -->
+      <rect x="162" y="0" width="48" height="36" rx="6" fill="#ffffff" stroke="#a5f3fc"/>
+      <text x="186" y="16" text-anchor="middle" font-size="12">🗣️</text>
+      <text x="186" y="28" text-anchor="middle" font-size="7.5" font-weight="600" fill="#0891b2">1st-Person</text>
+    </g>
+  </g>
+
+
+  <!-- ========================================== -->
+  <!-- CARD BOTTOM RIGHT: HUMAN VALIDATION NODES  -->
+  <!-- ========================================== -->
+  <!-- Conditional Router connector line -->
+  <path d="M 700 410 V 490" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="650" y="455" font-size="9" font-weight="700" fill="#475569">Conditional</text>
+  <text x="656" y="466" font-size="9" font-weight="700" fill="#475569">Router</text>
+
+  <g transform="translate(640, 495)" filter="url(#card-shadow)">
+    <!-- Light Green Container -->
+    <rect width="280" height="150" rx="12" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.8" stroke-dasharray="5,4"/>
+    <text x="16" y="24" font-size="12.5" font-weight="800" fill="#14532d">Human &amp; Caregiver Validation Nodes</text>
+    <text x="16" y="40" font-size="9" fill="#166534">
+      <tspan x="16" dy="0">Strict human-in-the-loop governance: only consented</tspan>
+      <tspan x="16" dy="12">relatives are voice-cloned; protected relatives are masked;</tspan>
+      <tspan x="16" dy="12">PIN lock protects sensitive caregiver controls.</tspan>
+    </text>
+
+    <!-- 3 Human Validation Checkpoints -->
+    <g transform="translate(18, 85)">
+      <!-- Node 1: Gatekeeper / Consent -->
+      <g transform="translate(0, 0)">
+        <rect width="70" height="45" rx="6" fill="#ffffff" stroke="#86efac" stroke-width="1.2"/>
+        <text x="35" y="18" text-anchor="middle" font-size="13">⛩️</text>
+        <text x="35" y="32" text-anchor="middle" font-size="8.5" font-weight="700" fill="#15803d">Consent Gate</text>
+        <text x="35" y="40" text-anchor="middle" font-size="7" fill="#16a34a">Voice/Photo Opt-in</text>
+      </g>
+
+      <!-- Node 2: Auditor / Logs -->
+      <g transform="translate(82, 0)">
+        <rect width="70" height="45" rx="6" fill="#ffffff" stroke="#86efac" stroke-width="1.2"/>
+        <text x="35" y="18" text-anchor="middle" font-size="13">📜</text>
+        <text x="35" y="32" text-anchor="middle" font-size="8.5" font-weight="700" fill="#15803d">Audit Logger</text>
+        <text x="35" y="40" text-anchor="middle" font-size="7" fill="#16a34a">Traceable History</text>
+      </g>
+
+      <!-- Node 3: Strategist / Caregiver Escalation -->
+      <g transform="translate(164, 0)">
+        <rect width="76" height="45" rx="6" fill="#ffffff" stroke="#86efac" stroke-width="1.2"/>
+        <text x="38" y="18" text-anchor="middle" font-size="13">🚨</text>
+        <text x="38" y="32" text-anchor="middle" font-size="8.5" font-weight="700" fill="#15803d">Escalation Hub</text>
+        <text x="38" y="40" text-anchor="middle" font-size="7" fill="#16a34a">Direct SMS / Call</text>
+      </g>
+    </g>
+  </g>
+
+
+  <!-- ARROW FROM REASONING ENGINE TO FINAL EVALUATION -->
+  <line x1="855" y1="340" x2="945" y2="340" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <circle cx="895" cy="340" r="3.5" fill="#334155"/>
+  <path d="M 895 340 V 430 H 945" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+
+  <!-- ========================================== -->
+  <!-- FAR RIGHT: EVALUATION & EXPERIENCE CARD    -->
+  <!-- ========================================== -->
+  <g transform="translate(950, 240)" filter="url(#card-shadow)">
+    <!-- Orange / Peach Container -->
+    <rect width="310" height="235" rx="14" fill="#fff7ed" stroke="#fb923c" stroke-width="1.8" stroke-dasharray="5,4"/>
+    <text x="18" y="26" font-size="13" font-weight="800" fill="#9a3412">Evaluation &amp; Patient Experience</text>
+    <text x="18" y="44" font-size="9" fill="#7c2d12">
+      <tspan x="18" dy="0">Evaluated on 3 critical clinical pillars: grounded faithfulness,</tspan>
+      <tspan x="18" dy="12">voice authenticity, and emotional calming efficacy.</tspan>
+    </text>
+
+    <!-- 3 Evaluation Metric Rows -->
+    <g transform="translate(18, 76)">
+      <!-- Row 1: Grounding & Zero Hallucination -->
+      <g transform="translate(0, 0)">
+        <circle cx="16" cy="14" r="14" fill="#ffedd5" stroke="#ea580c" stroke-width="1.2"/>
+        <text x="16" y="19" text-anchor="middle" font-size="13">🧠</text>
+        <text x="40" y="12" font-size="9.5" font-weight="700" fill="#9a3412">Grounded Faithfulness (Zero Hallucination)</text>
+        <text x="40" y="24" font-size="8" fill="#c2410c">Responses strictly validated against caregiver archive</text>
+      </g>
+
+      <!-- Row 2: Voice Naturalness & Pitch Fidelity -->
+      <g transform="translate(0, 48)">
+        <circle cx="16" cy="14" r="14" fill="#ffedd5" stroke="#ea580c" stroke-width="1.2"/>
+        <text x="16" y="19" text-anchor="middle" font-size="13">🎙️</text>
+        <text x="40" y="12" font-size="9.5" font-weight="700" fill="#9a3412">Voice Naturalness &amp; Pitch Fidelity</text>
+        <text x="40" y="24" font-size="8" fill="#c2410c">Precision-tuned micro-pitch (&plusmn;5Hz) &amp; speaking rate</text>
+      </g>
+
+      <!-- Row 3: Latency & Calming Impact -->
+      <g transform="translate(0, 96)">
+        <circle cx="16" cy="14" r="14" fill="#ffedd5" stroke="#ea580c" stroke-width="1.2"/>
+        <text x="16" y="19" text-anchor="middle" font-size="13">⚡</text>
+        <text x="40" y="12" font-size="9.5" font-weight="700" fill="#9a3412">Real-Time Latency &amp; Cognitive Calming</text>
+        <text x="40" y="24" font-size="8" fill="#c2410c">&lt;1.2s synthesis; distress alert dispatch &lt;500ms</text>
+      </g>
+    </g>
+  </g>
+
+</svg>
+</div>
+
+</body>
+</html>
